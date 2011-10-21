@@ -5,8 +5,7 @@ Control's flu summary site at http://www.cdc.gov/flu/weekly/
 
 Exports the data to a pipe-delimited text file.
 """
-
-
+import csv
 import mechanize
 import cookielib
 from BeautifulSoup import BeautifulSoup
@@ -34,8 +33,12 @@ soup = BeautifulSoup(html)
 table = soup.find("table", cellpadding=3)
 
 # open and prep outfile
-outfile = open('flu.txt', 'w')
-print >> outfile, 'WEEK|HHS_REGION|OUTPATIENT_ILI|PCT_FLU_POS|NUM_JURIS|A_H3|A_2009_H1N1|A_NO_SUBTYPE|B|PED_DEATHS'
+outfile = csv.writer(open('flu.csv', 'w'), delimiter="|")
+headers = [
+    'WEEK', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
+    'NUM_JURIS', 'A_H3', 'A_2009_H1N1', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
+]
+outfile.writerow(headers)
 
 # locate and parse table
 print 'Parsing table ...'
@@ -57,11 +60,12 @@ for row in table.findAll('tr')[2:]:
     a_no_subtype = col[6].string
     b = col[7].string
     ped_deaths = col[8].string
-    parsed_row = (week, region, ili, pct, num_juris, a_h3, a_2009_h1n1, a_no_subtype, b, ped_deaths)
+    parsed_row = (
+        week, region, ili, pct, num_juris, a_h3, a_2009_h1n1, 
+        a_no_subtype, b, ped_deaths)
     print 'Printing row ' + str(row_counter)
-    print >> outfile, '|'.join(parsed_row)
+    outfile.writerow(parsed_row)
     row_counter += 1
 
 # wrap up
-outfile.close()
 print 'All done!'
