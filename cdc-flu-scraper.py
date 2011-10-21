@@ -1,7 +1,9 @@
 """
 Scrapes the weekly "National and Regional Summary of Select 
 Surveillance Components" table from the Centers for Disease
-Control's flu summary site.
+Control's flu summary site at http://www.cdc.gov/flu/weekly/
+
+Exports the data to a pipe-delimited text file.
 """
 
 
