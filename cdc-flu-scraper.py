@@ -8,6 +8,7 @@ Exports the data to a comma-delimited text file.
 import csv
 import mechanize
 import cookielib
+import simplejson
 from BeautifulSoup import BeautifulSoup
 
 # Begin
@@ -33,12 +34,13 @@ soup = BeautifulSoup(html)
 table = soup.find("table", cellpadding=3)
 
 # open and prep outfile
-outfile = csv.writer(open('flu.csv', 'wb'), delimiter=",")
+outfile = open('flu.csv', 'wb')
+outwriter = csv.writer(outfile, delimiter=",")
 headers = [
     'WEEK', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
     'NUM_JURIS', 'A_H3', 'A_2009_H1N1', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
 ]
-outfile.writerow(headers)
+outwriter.writerow(headers)
 
 # locate and parse table
 print 'Parsing table ...'
@@ -62,10 +64,25 @@ for row in table.findAll('tr')[2:]:
     ped_deaths = col[8].string
     parsed_row = (
         week, region, ili, pct, num_juris, a_h3, a_2009_h1n1, 
-        a_no_subtype, b, ped_deaths)
+        a_no_subtype, b, ped_deaths
+    )
     print 'Printing row ' + str(row_counter)
-    outfile.writerow(parsed_row)
+    outwriter.writerow(parsed_row)
     row_counter += 1
+
+outfile.close()
+
+# reopen CSV data
+infile = open('flu.csv', 'r')
+data = csv.DictReader(infile)
+# convert to JSON
+json = simplejson.dumps(list(data), indent=4)
+# write to file
+jsonfile = open("flu.json", "w")
+jsonfile.write(json)
+jsonfile.close()
+infile.close()
 
 # wrap up
 print 'All done!'
+
