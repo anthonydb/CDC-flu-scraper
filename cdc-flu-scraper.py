@@ -33,7 +33,7 @@ soup = BeautifulSoup(html)
 table = soup.find("table", cellpadding=3)
 
 # open and prep outfile
-outfile = csv.writer(open('flu.csv', 'w'), delimiter=",")
+outfile = csv.writer(open('flu.csv', 'wb'), delimiter=",")
 headers = [
     'WEEK', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
     'NUM_JURIS', 'A_H3', 'A_2009_H1N1', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
