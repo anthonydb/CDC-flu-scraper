@@ -3,7 +3,7 @@ Scrapes the weekly "National and Regional Summary of Select
 Surveillance Components" table from the Centers for Disease
 Control's flu summary site at http://www.cdc.gov/flu/weekly/
 
-Exports the data to a pipe-delimited text file.
+Exports the data to a comma-delimited text file.
 """
 import csv
 import mechanize
@@ -69,4 +69,3 @@ for row in table.findAll('tr')[2:]:
 
 # wrap up
 print 'All done!'
-
