@@ -1,6 +1,7 @@
 import csv
 import mechanize
 import cookielib
+import simplejson
 from BeautifulSoup import BeautifulSoup
 
 
@@ -10,14 +11,14 @@ def run(verbose=True):
     Surveillance Components" table from the Centers for Disease
     Control's flu summary site at http://www.cdc.gov/flu/weekly/
 
-    Exports the data to a pipe-delimited text file.
+    Exports data to comma-delimited text and json file.
     
     Example usage:
 
-        >>> import scrape
-        >>> scrape.run()
+        >>> import fluscrape.py
+        >>> fluscrape.run()
         
-        $ python scrape.py
+        $ python fluscrape.py
 
     """
     if verbose:
@@ -42,12 +43,13 @@ def run(verbose=True):
     soup = BeautifulSoup(html)
 
     # open and prep outfile
-    outfile = csv.writer(open('flu.csv', 'w'), delimiter="|")
+    outfile = open('flu.csv', 'wb') 
+    outwriter = csv.writer(outfile, delimiter=",")
     headers = [
         'WEEK', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
         'NUM_JURIS', 'A_H3', 'A_2009_H1N1', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
     ]
-    outfile.writerow(headers)
+    outwriter.writerow(headers)
 
     # locate and parse table
     if verbose:
@@ -80,8 +82,21 @@ def run(verbose=True):
         )
         if verbose:
             print 'Printing row ' + str(row_counter)
-        outfile.writerow(parsed_row)
+        outwriter.writerow(parsed_row)
         row_counter += 1
+
+    outfile.close()
+
+    # reopen CSV data
+    infile = open('flu.csv', 'r')
+    data = csv.DictReader(infile)
+    # convert to JSON
+    json = simplejson.dumps(list(data), indent=4)
+    # write to file
+    jsonfile = open("flu.json", "w")
+    jsonfile.write(json)
+    jsonfile.close()
+    infile.close()
 
     # wrap up
     if verbose:
