@@ -1,5 +1,12 @@
-Python scraper to pull the weekly "National and Regional Summary of 
-Select Surveillance Components" table from the Centers for Disease
+Scrapes the weekly "National and Regional Summary of Select 
+Surveillance Components" table from the Centers for Disease
 Control's flu summary site at http://www.cdc.gov/flu/weekly/
 
-Exports the data to a comma-delimited text file.
+Exports data to comma-delimited text and json file.
+    
+Example usage:
+
+    >>> import fluscrape.py
+    >>> fluscrape.run()
+        
+    $ python fluscrape.py
