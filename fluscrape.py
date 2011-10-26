@@ -61,6 +61,8 @@ def run(verbose=True):
     for row in table.findAll('tr')[0:1]:
         x = row.findAll('th')
         week = x[1].string.strip('Data for week ')
+        if verbose:
+            print 'Found week ' + week
 
     # go get the data
     row_counter = 1
