@@ -15,7 +15,7 @@ def run(verbose=True):
     
     Example usage:
 
-        >>> import fluscrape.py
+        >>> import fluscrape
         >>> fluscrape.run()
         
         $ python fluscrape.py
