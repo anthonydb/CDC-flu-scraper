@@ -1,26 +1,26 @@
+import re
 import csv
 import mechanize
 import cookielib
 import simplejson
 from BeautifulSoup import BeautifulSoup
 
-
 def run(verbose=True):
     """
-    Scrapes the weekly "National and Regional Summary of Select 
+    Scrapes the weekly "National and Regional Summary of Select
     Surveillance Components" table from the Centers for Disease
     Control's flu summary site at http://www.cdc.gov/flu/weekly/
 
     Exports data to comma-delimited text and json file.
-    
+
     Example usage:
 
         >>> import fluscrape
         >>> fluscrape.run()
         
         $ python fluscrape.py
-
     """
+
     if verbose:
         print 'Initializing ...'
 
@@ -46,23 +46,30 @@ def run(verbose=True):
     outfile = open('flu.csv', 'wb') 
     outwriter = csv.writer(outfile, delimiter=",")
     headers = [
-        'WEEK', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
+        'WEEK_NUM', 'WEEK_END', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
         'NUM_JURIS', 'A_H3', 'A_2009_H1N1', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
     ]
     outwriter.writerow(headers)
+
+    # use regex to find the week number
+    week_num_text = re.search(r'Influenza Season Week \d{1,2}', html)
+    week_num = week_num_text.group()
+    week_num = re.sub('Influenza Season Week ', '', week_num)
+    if verbose:
+        print 'Found week number ' + week_num
+
+    # use regex to find the week ending date
+    week_end_text = re.search(r'ending (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}', html)
+    week_end = week_end_text.group()
+    week_end = re.sub('ending ', '', week_end)
+    if verbose:
+        print 'Found week ending ' + week_end
 
     # locate and parse table
     if verbose:
         print 'Parsing table ...'
 
     table = soup.find("table", cellpadding=3)
-
-    # figure out the week
-    for row in table.findAll('tr')[0:1]:
-        x = row.findAll('th')
-        week = x[1].string.strip('Data for week ')
-        if verbose:
-            print 'Found week ' + week
 
     # go get the data
     row_counter = 1
@@ -79,7 +86,7 @@ def run(verbose=True):
         b = col[7].string
         ped_deaths = col[8].string
         parsed_row = (
-            week, region, ili, pct, num_juris, a_h3, a_2009_h1n1, 
+            week_num, week_end, region, ili, pct, num_juris, a_h3, a_2009_h1n1, 
             a_no_subtype, b, ped_deaths
         )
         if verbose:
