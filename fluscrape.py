@@ -3,7 +3,7 @@ import csv
 import mechanize
 import cookielib
 import simplejson
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 def run(verbose=True):
     """
