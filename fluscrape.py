@@ -1,6 +1,6 @@
 import re
 import csv
-import mechanize
+import requests
 import cookielib
 import simplejson
 from bs4 import BeautifulSoup
@@ -25,23 +25,12 @@ def run(verbose=True):
     if verbose:
         print 'Initializing ...'
 
-    # prep browser
-    br = mechanize.Browser()
-    # tell it to ignore robots.txt
-    br.set_handle_robots(False)
-    # add cookie capabilities if needed
-    cj = cookielib.LWPCookieJar()
-    br.set_cookiejar(cj)
-    # Use Chrome browser headers
-    br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.1')]
-
     # open url
     if verbose:
         print "Opening url ..."
     url = "http://www.cdc.gov/flu/weekly/"
-    br.open(url)
-    html = br.response().read()
-    soup = BeautifulSoup(html)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text)
 
     # open and prep outfile
     outfile = open('flu.csv', 'wb')
@@ -53,14 +42,14 @@ def run(verbose=True):
     outwriter.writerow(headers)
 
     # use regex to find the week number
-    week_num_text = re.search(r'Influenza Season Week \d{1,2}', html)
+    week_num_text = re.search(r'Influenza Season Week \d{1,2}', r.text)
     week_num = week_num_text.group()
     week_num = re.sub('Influenza Season Week ', '', week_num)
     if verbose:
         print 'Found week number ' + week_num
 
     # use regex to find the week ending date
-    week_end_text = re.search(r'ending (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}', html)
+    week_end_text = re.search(r'ending (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}', r.text)
     week_end = week_end_text.group()
     week_end = re.sub('ending ', '', week_end)
     if verbose:
