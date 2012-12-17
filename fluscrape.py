@@ -5,6 +5,7 @@ import cookielib
 import simplejson
 from bs4 import BeautifulSoup
 
+
 def run(verbose=True):
     """
     Scrapes the weekly "National and Regional Summary of Select
@@ -17,7 +18,7 @@ def run(verbose=True):
 
         >>> import fluscrape
         >>> fluscrape.run()
-        
+
         $ python fluscrape.py
     """
 
@@ -43,7 +44,7 @@ def run(verbose=True):
     soup = BeautifulSoup(html)
 
     # open and prep outfile
-    outfile = open('flu.csv', 'wb') 
+    outfile = open('flu.csv', 'wb')
     outwriter = csv.writer(outfile, delimiter=",")
     headers = [
         'WEEK_NUM', 'WEEK_END', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
@@ -86,7 +87,7 @@ def run(verbose=True):
         b = col[7].string
         ped_deaths = col[8].string
         parsed_row = (
-            week_num, week_end, region, ili, pct, num_juris, a_h3, a_2009_h1n1, 
+            week_num, week_end, region, ili, pct, num_juris, a_h3, a_2009_h1n1,
             a_no_subtype, b, ped_deaths
         )
         if verbose:
