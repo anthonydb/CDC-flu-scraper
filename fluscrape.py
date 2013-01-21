@@ -1,7 +1,6 @@
 import re
 import csv
 import requests
-import cookielib
 import simplejson
 from bs4 import BeautifulSoup
 
@@ -37,7 +36,7 @@ def run(verbose=True):
     outwriter = csv.writer(outfile, delimiter=",")
     headers = [
         'WEEK_NUM', 'WEEK_END', 'HHS_REGION', 'OUTPATIENT_ILI', 'PCT_FLU_POS',
-        'NUM_JURIS', 'A_H3', 'A_2009_H1N1', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
+        'NUM_JURIS', '2009_H1N1', 'A_H3', 'A_NO_SUBTYPE', 'B', 'PED_DEATHS'
     ]
     outwriter.writerow(headers)
 
@@ -70,13 +69,13 @@ def run(verbose=True):
         ili = col[1].string
         pct = col[2].string.strip('%')
         num_juris = col[3].string
-        a_h3 = col[4].string
-        a_2009_h1n1 = col[5].string
+        a_2009_h1n1 = col[4].string
+        a_h3 = col[5].string
         a_no_subtype = col[6].string
         b = col[7].string
         ped_deaths = col[8].string
         parsed_row = (
-            week_num, week_end, region, ili, pct, num_juris, a_h3, a_2009_h1n1,
+            week_num, week_end, region, ili, pct, num_juris, a_2009_h1n1, a_h3,
             a_no_subtype, b, ped_deaths
         )
         if verbose:
