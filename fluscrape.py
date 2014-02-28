@@ -40,18 +40,12 @@ def run(verbose=True):
     ]
     outwriter.writerow(headers)
 
-    # use regex to find the week number
-    week_num_text = re.search(r'Influenza Season Week \d{1,2}', r.text)
-    week_num = week_num_text.group()
-    week_num = re.sub('Influenza Season Week ', '', week_num)
+    # use regex to get the week number and ending date
+    week_text = re.search(r'Week (\d{1,2}) ending (January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})', r.text)
+    week_num = week_text.group(1)
+    week_end = week_text.group(2) + ' ' + str(week_text.group(3)) + ', ' + str(week_text.group(4))
     if verbose:
         print 'Found week number ' + week_num
-
-    # use regex to find the week ending date
-    week_end_text = re.search(r'ending (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}', r.text)
-    week_end = week_end_text.group()
-    week_end = re.sub('ending ', '', week_end)
-    if verbose:
         print 'Found week ending ' + week_end
 
     # locate and parse table
